@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import VideoContext from "./VideoContext";
 import { io } from "socket.io-client";
 import Peer from "simple-peer";
+import { baseURL } from "../api";
 
-const URL = "http://localhost:5000/";
+const URL = baseURL;
 
 export const socket = io(URL);
 

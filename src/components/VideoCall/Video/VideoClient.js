@@ -53,6 +53,7 @@ const Video = () => {
   // }, []);
   
   useEffect(() => {
+    console.log(me);
     if(me){
       fetch(`${baseURL}/updateSocket`, {
         method: "POST",
@@ -72,7 +73,7 @@ const Video = () => {
         });
       }
   }, [me]);
-  console.log(me)
+
   const showModal = (showVal) => {
     setIsModalVisible(showVal);
   };

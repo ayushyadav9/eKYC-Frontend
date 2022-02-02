@@ -11,7 +11,7 @@ async function InitialiseWeb3() {
   // const DMR = await new web3.eth.Contract(DMR_ABI, networks[netId].address);
   const DMR = await new web3.eth.Contract(
     abi,
-    "0x65dfC9d775Df17b429865eb84ED41Ba9a13c1c3A"
+    "0xCb153e1A5211a16FDCB1c0BD77CD4D87b0c450bB"
   );
   return [DMR, accounts];
 }

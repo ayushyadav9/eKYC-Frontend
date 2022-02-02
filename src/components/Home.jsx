@@ -97,7 +97,7 @@ const Home = () => {
             </Button>
           </Form.Item>
             <div style={{textAlign: "center"}}>Don't have a account yet? <br/>
-            <span style={{color:"#1890ff",cursor:"pointer"}} onClick={()=>history.push('/client/NewClient')}>Create an account</span></div>
+            <span style={{color:"#1890ff",cursor:"pointer"}} onClick={()=>history.push('/client/Register')}>Create an account</span></div>
         </Form>
       </div>
     </div>

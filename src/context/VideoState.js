@@ -23,6 +23,7 @@ const VideoState = ({ children }) => {
   const [myMicStatus, setMyMicStatus] = useState(true);
   const [userMicStatus, setUserMicStatus] = useState();
   const [msgRcv, setMsgRcv] = useState("");
+  
 
   const myVideo = useRef();
   const userVideo = useRef();
@@ -38,7 +39,14 @@ const VideoState = ({ children }) => {
           myVideo.current.srcObject = currentStream;
         }
       });
-    socket.on("me", (id) => setMe(id));
+
+    if(socket){
+      setMe(socket.id);
+    }
+    socket.on("me", (id) => {
+      setMe(id);
+      console.log(id);
+    });
 
     socket.on("updateUserMedia", ({ type, currentMediaStatus }) => {
       if (currentMediaStatus !== null || currentMediaStatus !== []) {

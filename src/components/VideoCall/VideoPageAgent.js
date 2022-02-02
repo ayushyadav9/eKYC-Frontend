@@ -3,8 +3,9 @@ import Video from "./Video/VideoAgent";
 import VideoState from "../../context/VideoState";
 import { baseURL } from "../../api";
 import Options from "./options/OptionsAgent";
-import { ToastContainer, toast } from "react-toastify";
+import { message } from "antd";
 import "./VideoPage.css";
+import { useHistory } from "react-router-dom";
 const IPFS = require("ipfs-api");
 const ipfs = new IPFS({ host: "ipfs.infura.io", port: 5001, protocol: "https" });
 
@@ -13,14 +14,16 @@ const VideoPage = (props) => {
   const imageEle = useRef();
   const [imageURL, setImageURL] = useState();
   const [imageFile, setImageFile] = useState();
-  const [message, setMessage] = useState("");
   const [buffer, setBuffer] = useState([]);
   const [SS, setSS] = useState(false);
+  const history = useHistory()
 
   useEffect(() => {
-    if (!navigator.onLine) toast.error("Please connect to the internet!");
+    if (!navigator.onLine) message.error("Please connect to the internet!");
      // eslint-disable-next-line
   }, [navigator]);
+
+  console.log(props.location.state.kycId)
 
   useEffect(() => {
     setImageFile(dataURLtoFile(imageURL, "vidScreenshot"));
@@ -62,14 +65,13 @@ const VideoPage = (props) => {
   };
 
   const updateRecord = async (record_type, record_data) => {
-    let data = { record_type, record_data };
+    let data = { kycId:props.location.state.kycId, record_type, record_data };
     console.log(data);
 
     fetch(`${baseURL}/updateRecord`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("clientToken")}`,
       },
       body: JSON.stringify(data),
     })
@@ -78,9 +80,11 @@ const VideoPage = (props) => {
         // setisLoading(false);
         if (err) {
           console.log(err);
-          toast.error("Something went wrong");
+          message.error("Something went wrong");
           return;
         }
+        message.success("Updated Successfuly")
+        history.push("/bank")
         console.log(result)
       });
   };
@@ -88,14 +92,12 @@ const VideoPage = (props) => {
   const handleVerdict = (verd) => {
     
     ipfs.files.add(buffer, (error, result) => {
-      // setisLoading(false);
       if (error) {
         console.error(error);
         console.log(imageFile, imageURL);
-        setMessage("Something went wrong!");
+        message.error("Something went wrong!");
         return;
       }
-      setMessage("Updated Successfuly!");
       console.log(result);
       updateRecord(
         "video_kyc",
@@ -107,18 +109,6 @@ const VideoPage = (props) => {
 
   return (
     <div className="videoPageBody">
-      <ToastContainer
-        theme="dark"
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <VideoState>
         <Video 
           clickScreenshot={clickScreenshot} 

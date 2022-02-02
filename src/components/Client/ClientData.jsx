@@ -15,13 +15,15 @@ const findStatus = (stCode)=>{
 }
 
 const ClientData = ({ userData }) => {
-  const [isModal, setisModal] = useState();
+  const [isHistoryModal, setIsHistoryModal] = useState();
+  const [isvKYCModal, setIsvKYCModal] = useState();
   const [tableData, settableData] = useState([]);
   const [kycStat, setkysStat] = useState("");
   const { Text} = Typography;
 
   useEffect(() => {
     if(userData){
+      console.log(userData)
     let da = []
     setkysStat(findStatus(userData.kycStatus))
     userData.kycHistory.forEach(item => {
@@ -45,8 +47,14 @@ const ClientData = ({ userData }) => {
     message.success("KYC ID Copied!")
   }
 
-  const toggleModal = ()=>{
-    setisModal((prev)=>{
+  const toggleHistoryModal = ()=>{
+    setIsHistoryModal((prev)=>{
+      return !prev
+    })
+  }
+
+  const togglevKYCModal = ()=>{
+    setIsvKYCModal((prev)=>{
       return !prev
     })
   }
@@ -80,10 +88,17 @@ const ClientData = ({ userData }) => {
   return (
     <>
     
-    <Modal title="KYC History" visible={isModal} onOk={toggleModal} onCancel={toggleModal}>
+    <Modal style={{ top: "20px" }} title="KYC History" visible={isHistoryModal} onOk={toggleHistoryModal} onCancel={toggleHistoryModal}>
       {tableData.length>0 ? <Table columns={columns} dataSource={tableData} />:
       "No records found"}
       </Modal>
+
+      <Modal style={{ top: "20px" }} title="vKYC Details" visible={isvKYCModal} onOk={togglevKYCModal} onCancel={togglevKYCModal}>
+        <Card title={<p>Verdict: {JSON.parse(userData.records[4][1]).verdict}<br/>Time Stamp: {new Date(parseInt(userData.records[4][2])).toDateString()}</p>}>
+        <Image alt="Loading....." src={`https://ipfs.io/ipfs/${JSON.parse(userData.records[4][1]).image}`}/>
+        </Card>
+      </Modal>
+
       <div className="site-card-wrapper">
         <Row gutter={16}>
           <Col span={8}>
@@ -113,9 +128,11 @@ const ClientData = ({ userData }) => {
                 <Descriptions.Item label="Address " span={3}>{userData.address}</Descriptions.Item>
                 <Descriptions.Item label="Email " span={3}>{userData.email}</Descriptions.Item>
                 <Descriptions.Item label="KYC Id " span={3}>{userData.kycId}</Descriptions.Item>
+                <Descriptions.Item label="vKYC Proof " span={3}>{userData.records[4] ? <span style={{color:"blue", cursor:"pointer"}} onClick={togglevKYCModal}>vKYC Details</span> : <strong>Not Initiated</strong> }</Descriptions.Item>
                 <Descriptions.Item label="KYC Status "><strong>{kycStat}</strong></Descriptions.Item>
               </Descriptions>
-              <Button onClick={toggleModal}>Show KYC History</Button>
+              <Button onClick={toggleHistoryModal}>Show KYC History</Button>
+              
             </Card>
           </Col>
           <Col span={8}>

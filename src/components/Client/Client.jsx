@@ -5,7 +5,7 @@ import { baseURL } from "../../api";
 import { Card, Button, Row, message } from "antd";
 
 const Client = () => {
-  const history = useHistory();
+  let history = useHistory();
   const [userData, setUserData] = useState(null);
   const [bankList, setBankList] = useState(null);
 

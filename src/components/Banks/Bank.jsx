@@ -159,7 +159,10 @@ const Bank = () => {
             return;
           }
           if (result.success) {
-            history.push(`agent/video/${result.socket}`);
+            history.push({
+              pathname: `agent/video/${result.socket}`,
+              state: { kycId: kyc }
+            });
           }
           console.log(result);
         });
@@ -370,7 +373,7 @@ const Bank = () => {
                           type="primary"
                           onClick={handelAddRemarksPopup} 
                         >
-                          Proceed without vKYC
+                          Give KYC Verdict
                         </Button>,
                         <Button
                           key="back"

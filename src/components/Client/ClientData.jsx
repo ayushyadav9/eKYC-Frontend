@@ -159,6 +159,7 @@ const ClientData = ({ userData }) => {
                     onClick={() => copyKycId(userData.kycId)}
                   />
                 </Row>
+                <Button onClick={toggleHistoryModal}>Show KYC History</Button>
               </Card>
             </Row>
           </Col>
@@ -177,6 +178,9 @@ const ClientData = ({ userData }) => {
                 <Descriptions.Item label="Address " span={3}>
                   {userData.address}
                 </Descriptions.Item>
+                <Descriptions.Item label="PAN No " span={3}>
+                  {userData.pan}
+                </Descriptions.Item>                
                 {userData.email && (
                   <Descriptions.Item label="Email " span={3}>
                     {userData.email}
@@ -200,8 +204,7 @@ const ClientData = ({ userData }) => {
                 <Descriptions.Item label="KYC Status ">
                   <strong>{kycStat}</strong>
                 </Descriptions.Item>
-              </Descriptions>
-              <Button onClick={toggleHistoryModal}>Show KYC History</Button>
+              </Descriptions>             
             </Card>
           </Col>
           <Col span={8}>

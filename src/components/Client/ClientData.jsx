@@ -117,13 +117,7 @@ const ClientData = ({ userData }) => {
           onOk={togglevKYCModal}
           onCancel={togglevKYCModal}
         >
-          <Card
-            title={
-              <p>
-                Verdict: {JSON.parse(userData.records[4][1]).verdict}
-              </p>
-            }
-          >
+          <Card title={<p>Verdict: {JSON.parse(userData.records[4][1]).verdict}</p>}>
             <Image
               alt="Loading....."
               src={`https://ipfs.io/ipfs/${JSON.parse(userData.records[4][1]).image}`}
@@ -165,7 +159,7 @@ const ClientData = ({ userData }) => {
           </Col>
           <Col span={8}>
             <Card title="Basic Details" bordered={true}>
-              <Descriptions title="User Info" layout="horizontal">
+              <Descriptions layout="horizontal">
                 <Descriptions.Item label="Name " span={3}>
                   {userData.name}
                 </Descriptions.Item>
@@ -180,7 +174,7 @@ const ClientData = ({ userData }) => {
                 </Descriptions.Item>
                 <Descriptions.Item label="PAN No " span={3}>
                   {userData.pan}
-                </Descriptions.Item>                
+                </Descriptions.Item>
                 {userData.email && (
                   <Descriptions.Item label="Email " span={3}>
                     {userData.email}
@@ -190,7 +184,7 @@ const ClientData = ({ userData }) => {
                   {userData.kycId}
                 </Descriptions.Item>
                 <Descriptions.Item label="Location " span={3}>
-                  {userData.records[3][1].split(',').join(", ")}
+                  {userData.records[3][1].split(",").join(", ")}
                 </Descriptions.Item>
                 <Descriptions.Item label="vKYC Proof " span={3}>
                   {userData.records[4] ? (
@@ -207,7 +201,7 @@ const ClientData = ({ userData }) => {
                 <Descriptions.Item label="KYC Status ">
                   <strong>{kycStat}</strong>
                 </Descriptions.Item>
-              </Descriptions>             
+              </Descriptions>
             </Card>
           </Col>
           <Col span={8}>

@@ -4,6 +4,7 @@ import ClientData from "../Client/ClientData";
 const VerifyClient = ({ data, dmr, accounts }) => {
   const [clientData, setClientData] = useState(null);
   useEffect(() => {
+    setClientData(null);
     if (dmr && accounts) {
       dmr.methods
         .getCustomerDetails(data.kycId)
@@ -28,7 +29,7 @@ const VerifyClient = ({ data, dmr, accounts }) => {
         });
     }
     // eslint-disable-next-line
-  }, []);
+  }, [data]);
 
   return <>{clientData && <ClientData userData={clientData} />}</>;
 };

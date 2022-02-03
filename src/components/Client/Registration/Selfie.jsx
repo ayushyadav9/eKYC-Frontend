@@ -38,7 +38,7 @@ const Selfie = ({ formData, setformData, handelStatus }) => {
       let buf = buffer;
       buf[0] = Buffer(reader.result);
       setbuffer(buf);
-      console.log(buf);
+      message.success("Selfie Clicked")
     };
     // eslint-disable-next-line
   }, [webcamRef]);
@@ -53,7 +53,6 @@ const Selfie = ({ formData, setformData, handelStatus }) => {
         message.error("Something went wrong!");
         return;
       }
-      console.log(result[0].hash);
       setformData({ ...formData, selfieIPFS: result[0].hash });
       handelStatus(3)
     });
@@ -68,7 +67,7 @@ const Selfie = ({ formData, setformData, handelStatus }) => {
           style={{ display: "flex", margin: "auto" }}
           onClick={handleOk}
         >
-          Click Photo
+          Click Selfie
         </Button>
       </Card>
       <div style={{ display: "flex", justifyContent: "center" }}>
@@ -85,7 +84,7 @@ const Selfie = ({ formData, setformData, handelStatus }) => {
           onClick={handleSubmit}
           loading={isLoading}
         >
-          Next
+          Save
         </Button>
       </div>
     </>

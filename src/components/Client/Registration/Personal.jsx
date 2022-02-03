@@ -28,6 +28,7 @@ const Personal = ({ formData, setformData, handelStatus }) => {
         <Form.Item label="Full Name" style={{marginTop:"-23px"}}>
           <Input
             type="text"
+            placeholder="Name"
             value={formData.name}
             onChange={(e) => setformData({ ...formData, name: e.target.value })}
             required
@@ -36,6 +37,7 @@ const Personal = ({ formData, setformData, handelStatus }) => {
         <Form.Item label="Email Id" style={{marginTop:"-23px"}}>
           <Input
             type="email Id"
+            placeholder="Email"
             value={formData.email}
             onChange={(e) =>
               setformData({ ...formData, email: e.target.value })
@@ -46,6 +48,7 @@ const Personal = ({ formData, setformData, handelStatus }) => {
         <Form.Item label="Address" style={{marginTop:"-23px"}}>
           <Input
             type="text"
+            placeholder="Address"
             value={formData.address}
             onChange={(e) =>
               setformData({ ...formData, address: e.target.value })
@@ -57,6 +60,7 @@ const Personal = ({ formData, setformData, handelStatus }) => {
         <Form.Item label="Phone No" style={{ width: "45%",marginTop:"-23px"}}>
           <Input
             type="text"
+            placeholder="Phone"
             value={formData.phone}
             onChange={(e) =>
               setformData({ ...formData, phone: e.target.value })
@@ -67,6 +71,7 @@ const Personal = ({ formData, setformData, handelStatus }) => {
         <Form.Item label="PAN Number" style={{ width: "45%",marginLeft:"55px",marginTop:"-23px"}}>
           <Input
             type="text"
+            placeholder="PAN Number"
             value={formData.PANno}
             onChange={(e) =>
               setformData({ ...formData, PANno: e.target.value })

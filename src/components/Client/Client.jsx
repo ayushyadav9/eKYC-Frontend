@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import ClientData from "./ClientData";
 import { baseURL } from "../../api";
-import { Card, Button, Row, message, Avatar } from "antd";
+import { Card, Button, Row, message } from "antd";
 import {BankOutlined} from '@ant-design/icons';
 const { Meta } = Card;
 

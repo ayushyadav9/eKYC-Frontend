@@ -1,7 +1,6 @@
 import React from 'react';
-import { Card, Button, Input, Modal, message, Avatar } from "antd";
+import { Card,Modal, message, Avatar } from "antd";
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import VerifyClient from './VerifyClient';
 import InitialiseWeb3 from "../utils/web3.js";
 import { baseURL } from "../../api";
@@ -17,6 +16,7 @@ const ApprovedClients = () => {
 
     useEffect(() => {
         setup();
+        // eslint-disable-next-line
     }, []);
 
     const setup = async () => {

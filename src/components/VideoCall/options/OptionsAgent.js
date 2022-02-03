@@ -1,31 +1,25 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef
-} from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Input, Button, Modal } from "antd";
 import Phone from "../../../assets/phone.gif";
 import Teams from "../../../assets/teams.mp3";
 import * as classes from "./Options.module.css";
 import VideoContext from "../../../context/VideoContext";
 import Hang from "../../../assets/hang.svg";
-
-import {
-  UserOutlined,
-  PhoneOutlined,
-} from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
+import { UserOutlined, PhoneOutlined } from "@ant-design/icons";
 
 import { Card } from "antd";
 
 const Options = (props) => {
-  console.log(props.clientId);
+  console.log(props);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  let history = useHistory();
   const Audio = useRef();
   const {
     call,
     callAccepted,
     name,
+    setName,
     callEnded,
     callUser,
     leaveCall,
@@ -46,6 +40,11 @@ const Options = (props) => {
     setIsModalVisible(showVal);
   };
 
+  const handleHangup = () => {
+    leaveCall();
+    history.push("/bank");
+  };
+
   const handleCancel = () => {
     setIsModalVisible(false);
     leaveCall1();
@@ -53,11 +52,14 @@ const Options = (props) => {
   };
 
   useEffect(() => {
+    setName(props.bankName);
+  }, [props.bankName, setName]);
+  useEffect(() => {
     if (call.isReceivingCall && !callAccepted) {
       setIsModalVisible(true);
       setOtherUser(call.from);
     } else setIsModalVisible(false);
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, [call.isReceivingCall]);
 
   return (
@@ -82,14 +84,13 @@ const Options = (props) => {
           {callAccepted && !callEnded ? (
             <Button
               variant="contained"
-              onClick={leaveCall}
+              onClick={handleHangup}
               className={classes.hang}
               tabIndex="0"
             >
               <img src={Hang} alt="hang up" style={{ height: "15px" }} />
               &nbsp; Hang up
             </Button>
-            
           ) : (
             <Button
               type="primary"
@@ -104,14 +105,19 @@ const Options = (props) => {
               Call
             </Button>
           )}
-            <Button onClick={() => {updateMic()}} style={{ marginLeft: "15px" }} ><i
+          <Button
+            onClick={() => {
+              updateMic();
+            }}
+            style={{ marginLeft: "15px" }}
+          >
+            <i
               className={`fa fa-microphone${myMicStatus ? "" : "-slash"}`}
               aria-label={`${myMicStatus ? "mic on" : "mic off"}`}
               aria-hidden="true"
             ></i>
-            </Button>
+          </Button>
         </div>
-
 
         {call.isReceivingCall && !callAccepted && (
           <>
@@ -167,37 +173,60 @@ const Options = (props) => {
         )}
       </div>
       <canvas ref={props.canvasEle} style={{ display: "none" }}></canvas>
-                  
-      {props.imageURL && callEnded && 
+
       <Modal
         title="Screenshot"
-        visible={true}
+        visible={props.screenshotModal}
         onOk={() => showModal(false)}
-        onCancel={handleCancel}
+        onCancel={() => props.setScreenshotModal((cur) => !cur)}
         footer={null}
       >
-      <Card
-        style={{ width: 300,margin: "auto" }}
-        cover={
-          <img alt="example" src={props.imageURL}/>
-        }
-        actions={[
-          <Button
-            variant="contained"
-            onClick={() => props.handleVerdict("accepted")}
-          >
-            Accept
-          </Button>,
-          <Button
-            variant="contained"
-            onClick={() => props.handleVerdict("rejected")}
-          >
-            Reject
-          </Button>
-        ]}
-      >
-      </Card>
-      </Modal>}
+        <Card
+          style={{ width: 300, margin: "auto" }}
+          cover={<img alt="example" src={props.imageURL} />}
+          actions={[
+            <Button
+              variant="contained"
+              type="primary"
+              loading={props.isLoading}
+              onClick={() => props.handleVerdict("accepted")}
+            >
+              Accept
+            </Button>,
+            <Button
+              variant="contained"
+              type="danger"
+              onClick={() => props.handleVerdict("rejected")}
+              loading={props.isLoading}
+            >
+              Reject
+            </Button>,
+          ]}
+        ></Card>
+      </Modal>
+
+      {/* {props.imageURL && callEnded && (
+        <Modal
+          title="Screenshot"
+          visible={true}
+          onOk={() => showModal(false)}
+          onCancel={handleCancel}
+          footer={null}
+        >
+          <Card
+            style={{ width: 300, margin: "auto" }}
+            cover={<img alt="example" src={props.imageURL} />}
+            actions={[
+              <Button variant="contained" onClick={() => props.handleVerdict("accepted")}>
+                Accept
+              </Button>,
+              <Button variant="contained" onClick={() => props.handleVerdict("rejected")}>
+                Reject
+              </Button>,
+            ]}
+          ></Card>
+        </Modal>
+      )} */}
     </>
   );
 };

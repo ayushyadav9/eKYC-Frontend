@@ -82,16 +82,16 @@ const Client = () => {
         }
         if (result.success) {
           updateBankLists();
-          message.success("Response sent successfuly")
+          message.success("Response sent successfuly");
         }
         console.log(result);
       });
   };
 
-  const handelLogout = ()=>{
-    localStorage.removeItem('clientToken')
-    history.push('/')
-  }
+  const handelLogout = () => {
+    localStorage.removeItem("clientToken");
+    history.push("/");
+  };
 
   return (
     <>
@@ -111,7 +111,7 @@ const Client = () => {
           }}
         >
           <div style={{ margin: "auto 0" }}>
-            <h1 style={{ color: "rgb(14 21 246 / 85%)",fontWeight:"700"}}>vKYC</h1>
+            <h1 style={{ color: "rgb(14 21 246 / 85%)", fontWeight: "700" }}>vKYC</h1>
           </div>
           <div style={{ margin: "auto 0" }}>
             <Button
@@ -125,24 +125,27 @@ const Client = () => {
             <Button
               type="primary"
               ghost
-              onClick={() => history.push("/client/video")}
+              onClick={() =>
+                history.push({
+                  pathname: "/client/video",
+                  state: { name: userData ? userData.name : "Client" },
+                })
+              }
             >
               Start Video KYC
             </Button>
             <Button></Button>
-            <Button onClick={handelLogout} danger ghost>Logout</Button>
+            <Button onClick={handelLogout} danger ghost>
+              Logout
+            </Button>
           </div>
         </div>
 
-        <Card title="Client Data"  hoverable>
+        <Card title="Client Data" hoverable>
           {userData ? <ClientData userData={userData} /> : "No Data Found"}
         </Card>
 
-        <Card
-          title="Your approved Banks"
-          style={{ margin: "20px 0" }}
-          hoverable
-        >
+        <Card title="Your approved Banks" style={{ margin: "20px 0" }} hoverable>
           {bankList && bankList.approvedBanks.length > 0
             ? bankList.approvedBanks.map((item, i) => {
                 return (
@@ -152,7 +155,7 @@ const Client = () => {
                       textAlign: "center",
                       margin: "15px",
                       fontSize: "15px",
-                      borderRadius:"9px"
+                      borderRadius: "9px",
                     }}
                   >
                     {item[0]}
@@ -162,11 +165,7 @@ const Client = () => {
             : "You have no approved Banks"}
         </Card>
 
-        <Card
-          title="Pending KYC Requests:"
-          style={{ marginBottom: "20px" }}
-          hoverable
-        >
+        <Card title="Pending KYC Requests:" style={{ marginBottom: "20px" }} hoverable>
           {bankList && bankList.pendingBanks.length > 0
             ? bankList.pendingBanks.map((data, i) => {
                 return (
@@ -176,13 +175,19 @@ const Client = () => {
                       textAlign: "center",
                       margin: "15px",
                       fontSize: "15px",
-                      borderRadius:"9px"
+                      borderRadius: "9px",
                     }}
                   >
                     {data[0]}
-                    <Row style={{marginTop:"10px", display: "flex",justifyContent: "space-around"}}>
+                    <Row
+                      style={{
+                        marginTop: "10px",
+                        display: "flex",
+                        justifyContent: "space-around",
+                      }}
+                    >
                       <Button
-                      type="primary"
+                        type="primary"
                         mx={2}
                         onClick={(e) => handleRequest(e, data[1], true)}
                       >

@@ -5,6 +5,7 @@ const VerifyClient = ({data,dmr,accounts}) => {
 
   const [clientData, setClientData] = useState(null);
   useEffect(() => {
+    console.log(data);
 
     if (dmr && accounts) {
       dmr.methods

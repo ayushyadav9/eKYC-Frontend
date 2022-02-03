@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import ClientData from "./ClientData";
 import { baseURL } from "../../api";
-import { Card, Button, Row, message } from "antd";
+import { Card, Button, Row, message, Avatar } from "antd";
+import {BankOutlined} from '@ant-design/icons';
+const { Meta } = Card;
 
 const Client = () => {
   let history = useHistory();
@@ -88,7 +90,7 @@ const Client = () => {
       });
   };
 
-  const handelLogout = ()=>{
+  const handelLogout = () => {
     localStorage.removeItem('clientToken')
     history.push('/')
   }
@@ -111,7 +113,7 @@ const Client = () => {
           }}
         >
           <div style={{ margin: "auto 0" }}>
-            <h1 style={{ color: "rgb(14 21 246 / 85%)",fontWeight:"700"}}>vKYC</h1>
+            <h1 style={{ color: "rgb(14 21 246 / 85%)", fontWeight: "700" }}>vKYC</h1>
           </div>
           <div style={{ margin: "auto 0" }}>
             <Button
@@ -134,7 +136,7 @@ const Client = () => {
           </div>
         </div>
 
-        <Card title="Client Data"  hoverable>
+        <Card title="Client Data" hoverable>
           {userData ? <ClientData userData={userData} /> : "No Data Found"}
         </Card>
 
@@ -145,20 +147,24 @@ const Client = () => {
         >
           {bankList && bankList.approvedBanks.length > 0
             ? bankList.approvedBanks.map((item, i) => {
-                return (
-                  <Card.Grid
-                    style={{
-                      width: "25%",
-                      textAlign: "center",
-                      margin: "15px",
-                      fontSize: "15px",
-                      borderRadius:"9px"
-                    }}
-                  >
-                    {item[0]}
-                  </Card.Grid>
-                );
-              })
+              return (
+                <Card.Grid
+                  style={{
+                    width: "20%",
+                    textAlign: "center",
+                    margin: "15px",
+                    fontSize: "15px",
+                    borderRadius: "9px",
+                  }}
+                >
+                  <Meta                  
+                    avatar={<BankOutlined style={{ fontSize: '35px'}}/>}
+                    title={item[0]}
+                    description="Has Access"
+                  />
+                </Card.Grid>
+              );
+            })
             : "You have no approved Banks"}
         </Card>
 
@@ -169,36 +175,41 @@ const Client = () => {
         >
           {bankList && bankList.pendingBanks.length > 0
             ? bankList.pendingBanks.map((data, i) => {
-                return (
-                  <Card.Grid
-                    style={{
-                      width: "25%",
-                      textAlign: "center",
-                      margin: "15px",
-                      fontSize: "15px",
-                      borderRadius:"9px"
-                    }}
-                  >
-                    {data[0]}
-                    <Row style={{marginTop:"10px", display: "flex",justifyContent: "space-around"}}>
-                      <Button
+              return (
+                <Card.Grid
+                  style={{
+                    width: "20%",
+                    textAlign: "center",
+                    margin: "15px",
+                    fontSize: "15px",
+                    borderRadius: "9px",
+                  }}
+                >
+                  <Meta
+                    avatar={<BankOutlined style={{ fontSize: '30px'}}/>}
+                    title={data[0]}
+                    description={"Has Requested Access"}
+                  />
+
+                  <Row style={{ marginTop: "10px", display: "flex", justifyContent: "space-around" }}>
+                    <Button
                       type="primary"
-                        mx={2}
-                        onClick={(e) => handleRequest(e, data[1], true)}
-                      >
-                        <p>Accept</p>
-                      </Button>
-                      <Button
-                        mx={2}
-                        onClick={(e) => handleRequest(e, data[1], false)}
-                        danger
-                      >
-                        <p>Decline</p>
-                      </Button>
-                    </Row>
-                  </Card.Grid>
-                );
-              })
+                      mx={2}
+                      onClick={(e) => handleRequest(e, data[1], true)}
+                    >
+                      <p>Accept</p>
+                    </Button>
+                    <Button
+                      mx={2}
+                      onClick={(e) => handleRequest(e, data[1], false)}
+                      danger
+                    >
+                      <p>Decline</p>
+                    </Button>
+                  </Row>
+                </Card.Grid>
+              );
+            })
             : "You have no pending KYC request"}
         </Card>
 

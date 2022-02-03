@@ -94,7 +94,7 @@ const ClientData = ({ userData }) => {
       </Modal>
 
       {userData.records[4] && <Modal style={{ top: "20px" }} title="vKYC Details" visible={isvKYCModal} onOk={togglevKYCModal} onCancel={togglevKYCModal}>
-        <Card title={<p>Verdict: {JSON.parse(userData.records[4][1]).verdict}<br/>Time Stamp: {new Date(parseInt(userData.records[4][2])).toDateString()}</p>}>
+        <Card title={<p>Verdict: {JSON.parse(userData.records[4][1]).verdict}</p>}>
         <Image alt="Loading....." src={`https://ipfs.io/ipfs/${JSON.parse(userData.records[4][1]).image}`}/>
         </Card>
       </Modal>}

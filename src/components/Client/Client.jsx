@@ -141,7 +141,7 @@ const Client = () => {
           </div>
         </div>
 
-        <Card title="Client Data" hoverable>
+        <Card title="Client Data" hoverable loading={!userData}>
           {userData ? <ClientData userData={userData} /> : "No Data Found"}
         </Card>
 

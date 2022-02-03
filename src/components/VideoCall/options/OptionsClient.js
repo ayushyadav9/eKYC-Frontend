@@ -1,14 +1,12 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { Input, Button, Modal, message } from "antd";
+import { Input, Button, Modal } from "antd";
 import Phone from "../../../assets/phone.gif";
 import Teams from "../../../assets/teams.mp3";
 import * as classes from "./Options.module.css";
 import Hang from "../../../assets/hang.svg";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import VideoContext from "../../../context/VideoContext";
 import { useHistory } from "react-router-dom";
-import { UserOutlined, CopyOutlined, PhoneOutlined } from "@ant-design/icons";
-// import { baseURL } from "../../../api";
+import { UserOutlined, PhoneOutlined } from "@ant-design/icons";
 
 const Options = (props) => {
   let history = useHistory();
@@ -66,33 +64,16 @@ const Options = (props) => {
           size="large"
           placeholder="Your name"
           prefix={<UserOutlined />}
-          maxLength={15}
-          suffix={<small>{name.length}/15</small>}
           value={name}
           disabled={true}
-          onChange={(e) => {
-            setName(e.target.value);
-            localStorage.setItem("name", e.target.value);
-          }}
           className={classes.inputgroup}
         />
 
         <div className={classes.share_options}>
-          <CopyToClipboard text={me}>
-            <Button
-              type="primary"
-              icon={<CopyOutlined />}
-              className={classes.btn}
-              tabIndex="0"
-              onClick={() => message.success("Code copied successfully!")}
-            >
-              Copy code
-            </Button>
-          </CopyToClipboard>
+          Socket ID: {" " +me}
         </div>
       </div>
       <div style={{ marginBottom: "0.5rem" }}>
-        <h2>Call</h2>
         {callAccepted && !callEnded ? (
           <Button
             variant="contained"

@@ -1,6 +1,4 @@
 import Web3 from "web3";
-// import { abi as DMR_ABI } from "./KYC.json";
-// import { networks } from "./KYC.json";
 import abi from "./contractABI";
 
 async function InitialiseWeb3() {
@@ -10,11 +8,9 @@ async function InitialiseWeb3() {
       "https://polygon-mumbai.g.alchemy.com/v2/iiKsERYL7jzR-WQFV3P4tIRTbgbRXw3z"
   );
   const accounts = await web3.eth.getAccounts();
-  // const netId = await web3.eth.net.getId();
-  // const DMR = await new web3.eth.Contract(DMR_ABI, networks[netId].address);
   const DMR = await new web3.eth.Contract(
     abi,
-    "0xCb153e1A5211a16FDCB1c0BD77CD4D87b0c450bB"
+    "0xc94ca51Fc9ae6094bbDB1c3a72B3eBae183FdFFB"
   );
   return [DMR, accounts];
 }

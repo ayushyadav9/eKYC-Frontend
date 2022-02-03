@@ -18,7 +18,6 @@ const Options = (props) => {
   const {
     call,
     callAccepted,
-    name,
     setName,
     callEnded,
     callUser,
@@ -26,8 +25,6 @@ const Options = (props) => {
     answerCall,
     setOtherUser,
     leaveCall1,
-    myMicStatus,
-    updateMic,
   } = useContext(VideoContext);
 
   useEffect(() => {

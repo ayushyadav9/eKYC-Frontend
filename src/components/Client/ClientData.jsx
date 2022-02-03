@@ -121,8 +121,6 @@ const ClientData = ({ userData }) => {
             title={
               <p>
                 Verdict: {JSON.parse(userData.records[4][1]).verdict}
-                <br />
-                Time Stamp: {new Date(parseInt(userData.records[4][2])).toDateString()}
               </p>
             }
           >

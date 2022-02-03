@@ -21,7 +21,7 @@ function App() {
         <Route exact path="/" component={Home} />
         <ProtectedRoute exact path="/client" component={Client} />
         <ProtectedRoute exact path="/bank" component={Bank} />
-        <ProtectedRoute exact path="/bank/update" component={UpdateData} />
+        <ProtectedRoute exact path="/bank/update" component={UpdateData} />      
         <Route exact path="/admin" component={AdminPortal} />
         <Route exact path="/admin/AddAuth" component={AddAuth} />
         <Route exact path="/client/UpdateRecord" component={UpdateRecord} />

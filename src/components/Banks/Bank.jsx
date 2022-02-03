@@ -4,9 +4,12 @@ import { useHistory } from "react-router-dom";
 import InitialiseWeb3 from "../utils/web3.js";
 
 import VerifyClient from "./VerifyClient.jsx";
-import { Card, Button, Input, Modal, message } from "antd";
+import { Card, Button, Input, Modal, message, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { baseURL } from "../../api";
+import ApprovedClients from "./ApprovedClients.jsx";
+import { BankOutlined } from '@ant-design/icons';
+const { Meta } = Card;
 
 const Bank = () => {
   const history = useHistory();
@@ -47,6 +50,7 @@ const Bank = () => {
             label: "Bank Details",
           };
           setBankDetails(bankInfo);
+          console.log(bankInfo)
         })
         .catch((err) => {
           console.log(err);
@@ -192,6 +196,28 @@ const Bank = () => {
         .catch((err) => {
           console.log(err);
         });
+
+      if (verdict === 1) {
+
+        let data = { name: clientData.name, kycId: clientData.kycId, ethAddress: accounts[0] }
+        console.log(data);
+
+        fetch(`${baseURL}/addApprovedClient`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => res.json())
+          .then((result, err) => {
+            if (err) {
+              console.log(err);
+              message.error("Something went wrong");
+              return;
+            }
+          });
+      }
     }
   };
 
@@ -264,14 +290,13 @@ const Bank = () => {
         </div>
 
         <Card title="Bank Details" my={"50px"} hoverable>
+          
           {bankDetails && (
-            <Card type="inner" hoverable>
-              Name: {bankDetails.bName}
-              <br />
-              Address: {bankDetails.bAddress}
-              <br />
-              Etherium Address: {bankDetails.bWallet}
-            </Card>
+            <Meta 
+              avatar={<BankOutlined style={{ fontSize: '75px' }} />}
+              title={bankDetails.bName}
+              description={<><b>Bank Address</b> : {bankDetails.bAddress}<br/><b>Etherium Address :</b> {bankDetails.bWallet}</>}
+            />
           )}
         </Card>
         <Card title="Request Access" style={{ margin: "20px 0" }} hoverable>
@@ -309,63 +334,98 @@ const Bank = () => {
         <Card title="Pending Requests" style={{ marginBottom: "20px" }} hoverable>
           {pendingClientRequests.length > 0
             ? pendingClientRequests.map((req, i) => {
-                return (
-                  <Card.Grid
-                    style={{
-                      width: "25%",
-                      textAlign: "center",
-                      margin: "15px",
-                      fontSize: "15px",
-                      borderRadius: "9px",
-                    }}
-                  >
-                    {req.name}
-                  </Card.Grid>
-                );
-              })
+              return (
+                <Card.Grid
+                  style={{
+                    width: "20%",
+                    textAlign: "center",
+                    margin: "15px",
+                    fontSize: "15px",
+                    borderRadius: "9px",
+                  }}
+                >
+                  <Meta
+                    avatar={<Avatar
+                      size="large"
+                      style={{
+                        color: '#f56a00',
+                        backgroundColor: '#fde3cf',
+                      }}
+                    >
+                      {(req.name).charAt(0).toUpperCase()}
+                    </Avatar>}
+                    title={req.name}
+                    description={req.kycId}
+                  />
+                </Card.Grid>
+              );
+            })
             : "No pending requests"}
         </Card>
 
-        <Card title="Approved Requests" style={{ marginBottom: "20px" }} hoverable>
+        <Card
+          title="Accepted Requests"
+          style={{ marginBottom: "20px" }}
+          hoverable
+        >
           {approvedClients.length > 0
             ? approvedClients.map((req, i) => {
-                return (
-                  <Card.Grid
-                    style={{
-                      width: "25%",
-                      textAlign: "center",
-                      margin: "15px",
-                      fontSize: "15px",
-                      borderRadius: "9px",
-                    }}
-                    onClick={() =>
-                      togglePopup(req, [
-                        <Button type="primary" onClick={() => handelStartvKYC(req.kycId)}>
-                          Start vKYC
-                        </Button>,
-                        <Button type="primary" onClick={handelAddRemarksPopup}>
-                          Give KYC Verdict
-                        </Button>,
-                        <Button
-                          key="back"
-                          onClick={() =>
-                            setIsPopupOpen((prev) => {
-                              return !prev;
-                            })
-                          }
-                        >
-                          Cancel
-                        </Button>,
-                      ])
-                    }
-                  >
-                    {req.name}
-                  </Card.Grid>
-                );
-              })
+              return (
+                <Card.Grid
+                  style={{
+                    width: "20%",
+                    textAlign: "center",
+                    margin: "15px",
+                    fontSize: "15px",
+                    borderRadius: "9px",
+                  }}
+                  onClick={() =>
+                    togglePopup(req, [
+                      <Button type="primary" onClick={() => handelStartvKYC(req.kycId)}>
+                        Start vKYC
+                      </Button>,
+                      <Button
+                        type="primary"
+                        onClick={handelAddRemarksPopup}
+                      >
+                        Give KYC Verdict
+                      </Button>,
+                      <Button
+                        key="back"
+                        onClick={() =>
+                          setIsPopupOpen((prev) => {
+                            return !prev;
+                          })
+                        }
+                      >
+                        Cancel
+                      </Button>,
+                    ])
+                  }
+                >
+                  <Meta
+                    avatar={<Avatar
+                      size="large"
+                      style={{
+                        color: '#f56a00',
+                        backgroundColor: '#fde3cf',
+                      }}
+                    >
+                      {(req.name).charAt(0).toUpperCase()}
+                    </Avatar>}
+                    title={req.name}
+                    description={req.kycId}
+                  />
+                </Card.Grid>
+              );
+            })
             : "No approved requests"}
         </Card>
-        <Card mt={20}></Card>
+        <Card
+          title="Our Approved Clients"
+          style={{ marginBottom: "20px" }}
+          hoverable
+        ><ApprovedClients /></Card>
       </div>
     </>
   );

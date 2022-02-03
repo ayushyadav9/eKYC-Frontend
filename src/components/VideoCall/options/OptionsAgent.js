@@ -70,9 +70,7 @@ const Options = (props) => {
           <Input
             size="large"
             prefix={<UserOutlined />}
-            maxLength={15}
-            suffix={<small>{name.length}/15</small>}
-            value="ayush"
+            value={props.bankName}
             disabled={true}
             className={classes.inputgroup}
           />
@@ -105,18 +103,6 @@ const Options = (props) => {
               Call
             </Button>
           )}
-          <Button
-            onClick={() => {
-              updateMic();
-            }}
-            style={{ marginLeft: "15px" }}
-          >
-            <i
-              className={`fa fa-microphone${myMicStatus ? "" : "-slash"}`}
-              aria-label={`${myMicStatus ? "mic on" : "mic off"}`}
-              aria-hidden="true"
-            ></i>
-          </Button>
         </div>
 
         {call.isReceivingCall && !callAccepted && (

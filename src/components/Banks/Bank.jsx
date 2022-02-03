@@ -8,7 +8,7 @@ import { Card, Button, Input, Modal, message, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { baseURL } from "../../api";
 import ApprovedClients from "./ApprovedClients.jsx";
-import { BankOutlined } from '@ant-design/icons';
+import { BankOutlined } from "@ant-design/icons";
 const { Meta } = Card;
 
 const Bank = () => {
@@ -23,6 +23,7 @@ const Bank = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [clientData, setClientData] = useState(null);
   const [isLoading, setisLoading] = useState(false);
+  const [isVerdictLoading, setIsVerdictLoading] = useState(false);
   const [userDataFooters, setUserDataFooters] = useState([]);
   const [addRemPop, setaddRemPop] = useState(false);
   const [remarks, setremarks] = useState("");
@@ -50,7 +51,7 @@ const Bank = () => {
             label: "Bank Details",
           };
           setBankDetails(bankInfo);
-          console.log(bankInfo)
+          console.log(bankInfo);
         })
         .catch((err) => {
           console.log(err);
@@ -177,6 +178,7 @@ const Bank = () => {
   const handleVerdict = (verdict) => {
     console.log(remarks);
     if (dmr && accounts && clientData && remarks.length > 0) {
+      setIsVerdictLoading(true);
       dmr.methods
         .updateKycStatus(
           clientData.kycId,
@@ -187,6 +189,7 @@ const Bank = () => {
         )
         .send({ from: accounts[0] })
         .then((res) => {
+          setIsVerdictLoading(false);
           getBankData();
           handelAddRemarksPopup();
           setIsPopupOpen((prev) => {
@@ -194,18 +197,22 @@ const Bank = () => {
           });
         })
         .catch((err) => {
+          setIsVerdictLoading(false);
           console.log(err);
         });
 
       if (verdict === 1) {
-
-        let data = { name: clientData.name, kycId: clientData.kycId, ethAddress: accounts[0] }
+        let data = {
+          name: clientData.name,
+          kycId: clientData.kycId,
+          ethAddress: accounts[0],
+        };
         console.log(data);
 
         fetch(`${baseURL}/addApprovedClient`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         })
@@ -244,10 +251,18 @@ const Bank = () => {
           visible={addRemPop}
           onCancel={handelAddRemarksPopup}
           footer={[
-            <Button type="primary" onClick={() => handleVerdict(2)}>
+            <Button
+              type="danger"
+              loading={isVerdictLoading}
+              onClick={() => handleVerdict(2)}
+            >
               Reject KYC
             </Button>,
-            <Button type="primary" onClick={() => handleVerdict(1)}>
+            <Button
+              type="primary"
+              loading={isVerdictLoading}
+              onClick={() => handleVerdict(1)}
+            >
               Accept KYC
             </Button>,
           ]}
@@ -290,12 +305,17 @@ const Bank = () => {
         </div>
 
         <Card title="Bank Details" my={"50px"} hoverable>
-          
           {bankDetails && (
-            <Meta 
-              avatar={<BankOutlined style={{ fontSize: '75px' }} />}
+            <Meta
+              avatar={<BankOutlined style={{ fontSize: "75px" }} />}
               title={bankDetails.bName}
-              description={<><b>Bank Address</b> : {bankDetails.bAddress}<br/><b>Etherium Address :</b> {bankDetails.bWallet}</>}
+              description={
+                <>
+                  <b>Bank Address</b> : {bankDetails.bAddress}
+                  <br />
+                  <b>Etherium Address :</b> {bankDetails.bWallet}
+                </>
+              }
             />
           )}
         </Card>
@@ -334,98 +354,93 @@ const Bank = () => {
         <Card title="Pending Requests" style={{ marginBottom: "20px" }} hoverable>
           {pendingClientRequests.length > 0
             ? pendingClientRequests.map((req, i) => {
-              return (
-                <Card.Grid
-                  style={{
-                    width: "20%",
-                    textAlign: "center",
-                    margin: "15px",
-                    fontSize: "15px",
-                    borderRadius: "9px",
-                  }}
-                >
-                  <Meta
-                    avatar={<Avatar
-                      size="large"
-                      style={{
-                        color: '#f56a00',
-                        backgroundColor: '#fde3cf',
-                      }}
-                    >
-                      {(req.name).charAt(0).toUpperCase()}
-                    </Avatar>}
-                    title={req.name}
-                    description={req.kycId}
-                  />
-                </Card.Grid>
-              );
-            })
+                return (
+                  <Card.Grid
+                    style={{
+                      width: "20%",
+                      textAlign: "center",
+                      margin: "15px",
+                      fontSize: "15px",
+                      borderRadius: "9px",
+                    }}
+                  >
+                    <Meta
+                      avatar={
+                        <Avatar
+                          size="large"
+                          style={{
+                            color: "#f56a00",
+                            backgroundColor: "#fde3cf",
+                          }}
+                        >
+                          {req.name.charAt(0).toUpperCase()}
+                        </Avatar>
+                      }
+                      title={req.name}
+                      description={req.kycId}
+                    />
+                  </Card.Grid>
+                );
+              })
             : "No pending requests"}
         </Card>
 
-        <Card
-          title="Accepted Requests"
-          style={{ marginBottom: "20px" }}
-          hoverable
-        >
+        <Card title="Accepted Requests" style={{ marginBottom: "20px" }} hoverable>
           {approvedClients.length > 0
             ? approvedClients.map((req, i) => {
-              return (
-                <Card.Grid
-                  style={{
-                    width: "20%",
-                    textAlign: "center",
-                    margin: "15px",
-                    fontSize: "15px",
-                    borderRadius: "9px",
-                  }}
-                  onClick={() =>
-                    togglePopup(req, [
-                      <Button type="primary" onClick={() => handelStartvKYC(req.kycId)}>
-                        Start vKYC
-                      </Button>,
-                      <Button
-                        type="primary"
-                        onClick={handelAddRemarksPopup}
-                      >
-                        Give KYC Verdict
-                      </Button>,
-                      <Button
-                        key="back"
-                        onClick={() =>
-                          setIsPopupOpen((prev) => {
-                            return !prev;
-                          })
-                        }
-                      >
-                        Cancel
-                      </Button>,
-                    ])
-                  }
-                >
-                  <Meta
-                    avatar={<Avatar
-                      size="large"
-                      style={{
-                        color: '#f56a00',
-                        backgroundColor: '#fde3cf',
-                      }}
-                    >
-                      {(req.name).charAt(0).toUpperCase()}
-                    </Avatar>}
-                    title={req.name}
-                    description={req.kycId}
-                  />
-                </Card.Grid>
-              );
-            })
+                return (
+                  <Card.Grid
+                    style={{
+                      width: "20%",
+                      textAlign: "center",
+                      margin: "15px",
+                      fontSize: "15px",
+                      borderRadius: "9px",
+                    }}
+                    onClick={() =>
+                      togglePopup(req, [
+                        <Button type="primary" onClick={() => handelStartvKYC(req.kycId)}>
+                          Start vKYC
+                        </Button>,
+                        <Button type="primary" onClick={handelAddRemarksPopup}>
+                          Give KYC Verdict
+                        </Button>,
+                        <Button
+                          key="back"
+                          onClick={() =>
+                            setIsPopupOpen((prev) => {
+                              return !prev;
+                            })
+                          }
+                        >
+                          Cancel
+                        </Button>,
+                      ])
+                    }
+                  >
+                    <Meta
+                      avatar={
+                        <Avatar
+                          size="large"
+                          style={{
+                            color: "#f56a00",
+                            backgroundColor: "#fde3cf",
+                          }}
+                        >
+                          {req.name.charAt(0).toUpperCase()}
+                        </Avatar>
+                      }
+                      title={req.name}
+                      description={req.kycId}
+                    />
+                  </Card.Grid>
+                );
+              })
             : "No approved requests"}
         </Card>
-        <Card
-          title="Our Approved Clients"
-          style={{ marginBottom: "20px" }}
-          hoverable
-        ><ApprovedClients /></Card>
+        <Card title="Our Approved Clients" style={{ marginBottom: "20px" }} hoverable>
+          <ApprovedClients />
+        </Card>
       </div>
     </>
   );

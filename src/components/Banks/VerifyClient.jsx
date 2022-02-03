@@ -19,6 +19,7 @@ const VerifyClient = ({ data, dmr, accounts }) => {
             kycStatus: res.kycStatus,
             records: res.records,
             kycHistory: res.kycHistory,
+            pan: res.PAN,
           };
           setClientData(t);
         })

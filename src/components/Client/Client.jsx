@@ -84,16 +84,16 @@ const Client = () => {
         }
         if (result.success) {
           updateBankLists();
-          message.success("Response sent successfuly")
+          message.success("Response sent successfuly");
         }
         console.log(result);
       });
   };
 
   const handelLogout = () => {
-    localStorage.removeItem('clientToken')
-    history.push('/')
-  }
+    localStorage.removeItem("clientToken");
+    history.push("/");
+  };
 
   return (
     <>
@@ -127,24 +127,27 @@ const Client = () => {
             <Button
               type="primary"
               ghost
-              onClick={() => history.push("/client/video")}
+              onClick={() =>
+                history.push({
+                  pathname: "/client/video",
+                  state: { name: userData ? userData.name : "Client" },
+                })
+              }
             >
               Start Video KYC
             </Button>
             <Button></Button>
-            <Button onClick={handelLogout} danger ghost>Logout</Button>
+            <Button onClick={handelLogout} danger ghost>
+              Logout
+            </Button>
           </div>
         </div>
 
-        <Card title="Client Data" hoverable>
+        <Card title="Client Data" hoverable loading={!userData}>
           {userData ? <ClientData userData={userData} /> : "No Data Found"}
         </Card>
 
-        <Card
-          title="Your approved Banks"
-          style={{ margin: "20px 0" }}
-          hoverable
-        >
+        <Card title="Your approved Banks" style={{ margin: "20px 0" }} hoverable>
           {bankList && bankList.approvedBanks.length > 0
             ? bankList.approvedBanks.map((item, i) => {
               return (
@@ -168,11 +171,7 @@ const Client = () => {
             : "You have no approved Banks"}
         </Card>
 
-        <Card
-          title="Pending KYC Requests:"
-          style={{ marginBottom: "20px" }}
-          hoverable
-        >
+        <Card title="Pending KYC Requests:" style={{ marginBottom: "20px" }} hoverable>
           {bankList && bankList.pendingBanks.length > 0
             ? bankList.pendingBanks.map((data, i) => {
               return (

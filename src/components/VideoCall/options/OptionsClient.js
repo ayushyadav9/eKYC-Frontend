@@ -1,19 +1,16 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { Input, Button, Modal, message } from "antd";
+import { Input, Button, Modal } from "antd";
 import Phone from "../../../assets/phone.gif";
 import Teams from "../../../assets/teams.mp3";
 import * as classes from "./Options.module.css";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import Hang from "../../../assets/hang.svg";
 import VideoContext from "../../../context/VideoContext";
+import { useHistory } from "react-router-dom";
+import { UserOutlined, PhoneOutlined } from "@ant-design/icons";
 
-import {
-  UserOutlined,
-  CopyOutlined,
-  PhoneOutlined,
-} from "@ant-design/icons";
-// import { baseURL } from "../../../api";
+const Options = (props) => {
+  let history = useHistory();
 
-const Options = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const Audio = useRef();
   const {
@@ -21,7 +18,9 @@ const Options = () => {
     callAccepted,
     name,
     setName,
+    callEnded,
     me,
+    leaveCall,
     answerCall,
     setOtherUser,
     leaveCall1,
@@ -33,12 +32,18 @@ const Options = () => {
     } else Audio?.current?.pause();
   }, [isModalVisible]);
 
-  
+  useEffect(() => {
+    setName(props.clientName);
+  }, [props.clientName, setName]);
 
   const showModal = (showVal) => {
     setIsModalVisible(showVal);
   };
 
+  const handleHangup = () => {
+    leaveCall();
+    history.push("/client");
+  };
   const handleCancel = () => {
     setIsModalVisible(false);
     leaveCall1();
@@ -49,8 +54,7 @@ const Options = () => {
       setIsModalVisible(true);
       setOtherUser(call.from);
     } else setIsModalVisible(false);
-    // eslint-disable-next-line
-  }, [call.isReceivingCall]);
+  }, [call.isReceivingCall, call.from, callAccepted, setOtherUser]);
 
   return (
     <div className={classes.options}>
@@ -60,29 +64,29 @@ const Options = () => {
           size="large"
           placeholder="Your name"
           prefix={<UserOutlined />}
-          maxLength={15}
-          suffix={<small>{name.length}/15</small>}
           value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            localStorage.setItem("name", e.target.value);
-          }}
+          disabled={true}
           className={classes.inputgroup}
         />
 
         <div className={classes.share_options}>
-          <CopyToClipboard text={me}>
-            <Button
-              type="primary"
-              icon={<CopyOutlined />}
-              className={classes.btn}
-              tabIndex="0"
-              onClick={() => message.success("Code copied successfully!")}
-            >
-              Copy code
-            </Button>
-          </CopyToClipboard>
+          Socket ID: {" " +me}
         </div>
+      </div>
+      <div style={{ marginBottom: "0.5rem" }}>
+        {callAccepted && !callEnded ? (
+          <Button
+            variant="contained"
+            onClick={handleHangup}
+            className={classes.hang}
+            tabIndex="0"
+          >
+            <img src={Hang} alt="hang up" style={{ height: "15px" }} />
+            &nbsp; Hang up
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
 
       {call.isReceivingCall && !callAccepted && (

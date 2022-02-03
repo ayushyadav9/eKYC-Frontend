@@ -138,7 +138,6 @@ const Bank = () => {
   };
 
   const togglePopup = (data, footers) => {
-
     setClientData(data);
     console.log(data);
     setUserDataFooters(footers);
@@ -148,7 +147,6 @@ const Bank = () => {
   };
 
   const handelStartvKYC = (kyc) => {
-
     fetch(`${baseURL}/getSocket`, {
       method: "POST",
       headers: {
@@ -165,7 +163,7 @@ const Bank = () => {
         if (result.success) {
           history.push({
             pathname: `agent/video/${result.socket}`,
-            state: { kycId: kyc }
+            state: { kycId: kyc, name: bankDetails.bName ? bankDetails.bName : "Bank" },
           });
         }
         console.log(result);
@@ -191,7 +189,9 @@ const Bank = () => {
         .then((res) => {
           getBankData();
           handelAddRemarksPopup();
-          setIsPopupOpen((prev) => { return !prev; });
+          setIsPopupOpen((prev) => {
+            return !prev;
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -244,18 +244,12 @@ const Bank = () => {
           visible={addRemPop}
           onCancel={handelAddRemarksPopup}
           footer={[
-            <Button
-              type="primary"
-              onClick={() => handleVerdict(2)}
-            >
+            <Button type="primary" onClick={() => handleVerdict(2)}>
               Reject KYC
             </Button>,
-            <Button
-              type="primary"
-              onClick={() => handleVerdict(1)}
-            >
+            <Button type="primary" onClick={() => handleVerdict(1)}>
               Accept KYC
-            </Button>
+            </Button>,
           ]}
         >
           <Input
@@ -264,9 +258,7 @@ const Bank = () => {
             onChange={(e) => setremarks(e.target.value)}
           ></Input>
         </Modal>
-        {clientData && (
-          <VerifyClient dmr={dmr} accounts={accounts} data={clientData} />
-        )}
+        {clientData && <VerifyClient dmr={dmr} accounts={accounts} data={clientData} />}
       </Modal>
       <div
         style={{
@@ -284,9 +276,7 @@ const Bank = () => {
           }}
         >
           <div style={{ margin: "auto 0" }}>
-            <h1 style={{ color: "rgb(14 21 246 / 85%)", fontWeight: "700" }}>
-              vKYC
-            </h1>
+            <h1 style={{ color: "rgb(14 21 246 / 85%)", fontWeight: "700" }}>vKYC</h1>
           </div>
           <div style={{ margin: "auto 0" }}>
             <Button type="primary" ghost>
@@ -319,11 +309,7 @@ const Bank = () => {
               style={{ width: "20%" }}
               prefix={<UserOutlined />}
             />
-            <Button
-              size="large"
-              loading={isLoading}
-              onClick={handleSendRequest}
-            >
+            <Button size="large" loading={isLoading} onClick={handleSendRequest}>
               Send Request
             </Button>
           </div>
@@ -339,21 +325,13 @@ const Bank = () => {
               style={{ width: "20%" }}
               prefix={<UserOutlined />}
             />
-            <Button
-              size="large"
-              loading={isLoading}
-              onClick={handleRequestData}
-            >
+            <Button size="large" loading={isLoading} onClick={handleRequestData}>
               Access
             </Button>
           </div>
         </Card>
 
-        <Card
-          title="Pending Requests"
-          style={{ marginBottom: "20px" }}
-          hoverable
-        >
+        <Card title="Pending Requests" style={{ marginBottom: "20px" }} hoverable>
           {pendingClientRequests.length > 0
             ? pendingClientRequests.map((req, i) => {
               return (

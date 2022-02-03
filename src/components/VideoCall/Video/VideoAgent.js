@@ -1,32 +1,44 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import VideoContext from "../../../context/VideoContext";
 import "./Video.css";
-import {  Modal, Input, notification, Avatar } from "antd";
+import { Modal, Input, notification, Avatar } from "antd";
 import ScreenShotIcon from "../../../assets/screenshot.png";
 import Msg_Illus from "../../../assets/msg_illus.svg";
 import Msg from "../../../assets/msg.svg";
-import { UserOutlined, MessageOutlined, RedoOutlined } from "@ant-design/icons";
-
+import { UserOutlined, MessageOutlined } from "@ant-design/icons";
+import VideoIcon from "../../../assets/video.svg";
+import VideoOff from "../../../assets/video-off.svg";
 import { socket } from "../../../context/VideoState";
+import { useHistory } from "react-router-dom";
 
 // const socket = io()
 const { Search } = Input;
 const Video = (props) => {
   const {
+    call,
     callAccepted,
+    myVideo,
     userVideo,
+    stream,
     name,
     callEnded,
     sendMsg: sendMsgFunc,
     msgRcv,
     chat,
     setChat,
+    userName,
+    myVdoStatus,
     fullScreen,
     userVdoStatus,
+    updateVideo,
+    myMicStatus,
+    userMicStatus,
+    updateMic,
   } = useContext(VideoContext);
 
   const [sendMsg, setSendMsg] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  let history = useHistory();
   socket.on("msgRcv", ({ name, msg: value, sender }) => {
     let msg = {};
     msg.msg = value;
@@ -34,6 +46,10 @@ const Video = (props) => {
     msg.sender = sender;
     msg.timestamp = Date.now();
     setChat([...chat, msg]);
+  });
+
+  socket.on("endCall", () => {
+    history.push("/bank");
   });
 
   const dummy = useRef();
@@ -59,132 +75,178 @@ const Video = (props) => {
         icon: <MessageOutlined style={{ color: "#108ee9" }} />,
       });
     }
-    // eslint-disable-next-line
-  }, [msgRcv]);
+  }, [msgRcv, isModalVisible]);
 
   return (
-    <>
-      <div className="grid">
-        {callAccepted && !callEnded?  (
-          <div
-            style={{ textAlign: "center" }}
-            className="card"
-            id={callAccepted && !callEnded ? "video1" : "video3"}
-          >
-            <div style={{ height: "2rem" }}>
-              <h3>{userVdoStatus && name?name:"Client Name"}</h3>
-            </div>
-            <div className="video-avatar-container">
-              <video
-                playsInline
-                muted
-                onClick={fullScreen}
-                ref={userVideo}
-                autoPlay
-                className="video-active"
-                style={{
-                  opacity: `${userVdoStatus ? "1" : "0"}`,
-                }}
-              />
-
-              <Avatar
-                style={{
-                  backgroundColor: "#116",
-                  position: "absolute",
-                  opacity: `${userVdoStatus ? "-1" : "2"}`,
-                }}
-                size={98}
-                icon={!name && <UserOutlined />}
-              >
-                {name}
-              </Avatar>
-            </div>
-
-            <div className="iconsDiv">
-
-              {callAccepted && !callEnded && (
-                <div
-                  className="icons"
-                  onClick={() => {
-                    setIsModalVisible(!isModalVisible);
-                  }}
-                  tabIndex="0"
-                >
-                  <img src={Msg} alt="chat icon" />
-                </div>
-              )}
-              <Modal
-                title="Chat"
-                footer={null}
-                visible={isModalVisible}
-                onOk={() => showModal(false)}
-                onCancel={() => showModal(false)}
-                style={{ maxHeight: "100px" }}
-              >
-                {chat.length ? (
-                  <div className="msg_flex">
-                    {chat.map((msg) => (
-                      <div className={msg.type === "sent" ? "msg_sent" : "msg_rcv"}>
-                        {msg.msg}
-                      </div>
-                    ))}
-                    <div ref={dummy} id="no_border"></div>
-                  </div>
-                ) : (
-                  <div className="chat_img_div">
-                    <img src={Msg_Illus} alt="msg_illus" className="img_illus" />
-                  </div>
-                )}
-                <Search
-                  placeholder="your message"
-                  allowClear
-                  className="input_msg"
-                  enterButton="Send 🚀"
-                  onChange={(e) => setSendMsg(e.target.value)}
-                  value={sendMsg}
-                  size="large"
-                  onSearch={onSearch}
-                />
-              </Modal>
-
-              {callAccepted && !callEnded && (
-                <div
-                  className="icons"
-                  onClick={() => props.clickScreenshot(userVideo)}
-                  tabIndex="0"
-                >
-                  <img src={ScreenShotIcon}  alt="screenshot icon" />
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="bouncing-loader">
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        )}
-
-      {props.SS && (
-          <div style={{ textAlign: "center" }}className="card"id={callAccepted && !callEnded ? "video1" : "video3"}>
+    <div className="grid">
+      {stream ? (
+        <div
+          style={{ textAlign: "center" }}
+          className="card"
+          id={callAccepted && !callEnded ? "video1" : "video3"}
+        >
           <div style={{ height: "2rem" }}>
-            <h3>{userVdoStatus && name?name:"Screenshot"}</h3>
+            <h3>{myVdoStatus && name}</h3>
           </div>
-            <img alt="example" style={{ maxWidth:'100%'}} src={props.imageURL}/>
+          <div className="video-avatar-container">
+            <video
+              playsInline
+              muted
+              onClick={fullScreen}
+              ref={myVideo}
+              autoPlay
+              className="video-active"
+              style={{
+                opacity: `${myVdoStatus ? "1" : "0"}`,
+              }}
+            />
 
-            <div className="iconsDiv">
-              {callAccepted && !callEnded && (
-                <div className="icons" onClick={() => {props.clickScreenshot(userVideo)}}tabIndex="0">
-                  <RedoOutlined />
-                  {/* <img src={Msg} alt="chat icon" /> */}
+            <Avatar
+              style={{
+                backgroundColor: "#116",
+                position: "absolute",
+                opacity: `${myVdoStatus ? "-1" : "2"}`,
+              }}
+              size={98}
+              icon={!name && <UserOutlined />}
+            >
+              {name}
+            </Avatar>
+          </div>
+
+          <div className="iconsDiv">
+            <div
+              className="icons"
+              onClick={() => {
+                updateMic();
+              }}
+              tabIndex="0"
+            >
+              <i
+                className={`fa fa-microphone${myMicStatus ? "" : "-slash"}`}
+                style={{ transform: "scaleX(-1)" }}
+                aria-label={`${myMicStatus ? "mic on" : "mic off"}`}
+                aria-hidden="true"
+              ></i>
+            </div>
+
+            {callAccepted && !callEnded && (
+              <div
+                className="icons"
+                onClick={() => {
+                  setIsModalVisible(!isModalVisible);
+                }}
+                tabIndex="0"
+              >
+                <img src={Msg} alt="chat icon" />
+              </div>
+            )}
+            <Modal
+              title="Chat"
+              footer={null}
+              visible={isModalVisible}
+              onOk={() => showModal(false)}
+              onCancel={() => showModal(false)}
+              style={{ maxHeight: "100px" }}
+            >
+              {chat.length ? (
+                <div className="msg_flex">
+                  {chat.map((msg) => (
+                    <div className={msg.type === "sent" ? "msg_sent" : "msg_rcv"}>
+                      {msg.msg}
+                    </div>
+                  ))}
+                  <div ref={dummy} id="no_border"></div>
+                </div>
+              ) : (
+                <div className="chat_img_div">
+                  <img src={Msg_Illus} alt="msg_illus" className="img_illus" />
                 </div>
               )}
-              </div>
+              <Search
+                placeholder="your message"
+                allowClear
+                className="input_msg"
+                enterButton="Send 🚀"
+                onChange={(e) => setSendMsg(e.target.value)}
+                value={sendMsg}
+                size="large"
+                onSearch={onSearch}
+              />
+            </Modal>
+            <div className="icons" onClick={() => updateVideo()} tabIndex="0">
+              {myVdoStatus ? (
+                <img src={VideoIcon} alt="video on icon" />
+              ) : (
+                <img src={VideoOff} alt="video off icon" />
+              )}
+            </div>
           </div>
-        )}  
-      </div>
-    </>
+        </div>
+      ) : (
+        <div className="bouncing-loader">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      )}
+
+      {callAccepted && !callEnded && userVideo && (
+        <div className="card2" style={{ textAlign: "center" }} id="video2">
+          <div style={{ height: "2rem" }}>
+            <h3>{userVdoStatus && (call.name || userName)}</h3>
+          </div>
+
+          <div className="video-avatar-container">
+            <video
+              playsInline
+              ref={userVideo}
+              onClick={fullScreen}
+              autoPlay
+              className="video-active"
+              style={{
+                opacity: `${userVdoStatus ? "1" : "0"}`,
+              }}
+            />
+
+            <Avatar
+              style={{
+                backgroundColor: "#116",
+                position: "absolute",
+                opacity: `${userVdoStatus ? "-1" : "2"}`,
+              }}
+              size={98}
+              icon={!(userName || call.name) && <UserOutlined />}
+            >
+              {userName || call.name}
+            </Avatar>
+            {!userMicStatus && (
+              <i
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "0",
+                  padding: "0.3rem",
+                  backgroundColor: "#fefefebf",
+                }}
+                className="fad fa-volume-mute fa-2x"
+                aria-hidden="true"
+                aria-label="microphone muted"
+              ></i>
+            )}
+          </div>
+          <div className="iconsDiv">
+            <div
+              className="icons"
+              onClick={() => props.clickScreenshot(userVideo)}
+              tabIndex="0"
+            >
+              <img src={ScreenShotIcon} alt="screenshot icon" />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

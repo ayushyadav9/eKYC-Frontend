@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Input, DatePicker, Select, Space, Button, message, Row } from "antd";
+import {baseURL} from "../../../api"
 
 const Personal = ({ formData, setformData, handelStatus }) => {
+  const [isLoading, setisLoading] = useState(false);
+
   const handelNext = () => {
     if (
       formData.name.length &&
@@ -12,7 +15,32 @@ const Personal = ({ formData, setformData, handelStatus }) => {
       formData.gender.length &&
       formData.PANno.length
     ) {
-      handelStatus(1);
+      setisLoading(true)
+      fetch(`${baseURL}/checkUser`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email:formData.email }),
+      })
+        .then((res) => res.json())
+        .then((result, err) => {
+          setisLoading(false)
+          console.log(result)
+          if (err) {
+            console.log(err);
+            message.error("Something went wrong");
+            return;
+          }
+          if (result.success) {
+            if(result.message){
+              handelStatus(1);
+            }
+            else{
+              return message.info("User with this Email already exists!")
+            }
+          }
+        })
     } else {
       message.error("Please Fill Personal Details!");
     }
@@ -123,6 +151,7 @@ const Personal = ({ formData, setformData, handelStatus }) => {
           type="primary"
           style={{ margin: "0 10px" }}
           onClick={handelNext}
+          loading={isLoading}
         >
           Next
         </Button>

@@ -5,7 +5,10 @@ import abi from "./contractABI";
 
 async function InitialiseWeb3() {
   await window.ethereum.enable();
-  const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
+  const web3 = new Web3(
+    Web3.givenProvider ||
+      "https://polygon-mumbai.g.alchemy.com/v2/iiKsERYL7jzR-WQFV3P4tIRTbgbRXw3z"
+  );
   const accounts = await web3.eth.getAccounts();
   // const netId = await web3.eth.net.getId();
   // const DMR = await new web3.eth.Contract(DMR_ABI, networks[netId].address);

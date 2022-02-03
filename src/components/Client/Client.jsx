@@ -147,7 +147,7 @@ const Client = () => {
           {userData ? <ClientData userData={userData} /> : "No Data Found"}
         </Card>
 
-        <Card title="Your approved Banks" style={{ margin: "20px 0" }} hoverable>
+        <Card title="Your Approved Banks" style={{ margin: "20px 0" }} hoverable>
           {bankList && bankList.approvedBanks.length > 0
             ? bankList.approvedBanks.map((item, i) => {
               return (
@@ -171,7 +171,7 @@ const Client = () => {
             : "You have no approved Banks"}
         </Card>
 
-        <Card title="Pending KYC Requests:" style={{ marginBottom: "20px" }} hoverable>
+        <Card title="Pending Authorization Requests:" style={{ marginBottom: "20px" }} hoverable>
           {bankList && bankList.pendingBanks.length > 0
             ? bankList.pendingBanks.map((data, i) => {
               return (

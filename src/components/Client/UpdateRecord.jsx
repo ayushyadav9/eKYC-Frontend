@@ -41,7 +41,7 @@ const UpdateRecord = () => {
     let data = { record_type, record_data };
     console.log(data);
 
-    fetch(`${baseURL}/updateRecord`, {
+    fetch(`${baseURL}/updateRecordFromClient`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

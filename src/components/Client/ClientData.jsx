@@ -189,6 +189,9 @@ const ClientData = ({ userData }) => {
                 <Descriptions.Item label="KYC Id " span={3}>
                   {userData.kycId}
                 </Descriptions.Item>
+                <Descriptions.Item label="Location " span={3}>
+                  {userData.records[3][1].split(',').join(", ")}
+                </Descriptions.Item>
                 <Descriptions.Item label="vKYC Proof " span={3}>
                   {userData.records[4] ? (
                     <span

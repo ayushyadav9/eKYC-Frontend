@@ -50,7 +50,7 @@ const Bank = () => {
         })
         .catch((err) => {
           console.log(err);
-      });
+        });
     }
   };
 
@@ -66,7 +66,7 @@ const Bank = () => {
         .catch((err) => {
           console.log(err);
         });
-      }
+    }
   };
 
   useEffect(() => {
@@ -134,7 +134,6 @@ const Bank = () => {
   };
 
   const togglePopup = (data, footers) => {
-
     setClientData(data);
     console.log(data);
     setUserDataFooters(footers);
@@ -144,28 +143,27 @@ const Bank = () => {
   };
 
   const handelStartvKYC = (kyc) => {
-    
-      fetch(`${baseURL}/getSocket`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ kycId: kyc }),
-      })
-        .then((res) => res.json())
-        .then((result, err) => {
-          if (err) {
-            console.log(err);
-            return;
-          }
-          if (result.success) {
-            history.push({
-              pathname: `agent/video/${result.socket}`,
-              state: { kycId: kyc }
-            });
-          }
-          console.log(result);
-        });
+    fetch(`${baseURL}/getSocket`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ kycId: kyc }),
+    })
+      .then((res) => res.json())
+      .then((result, err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        if (result.success) {
+          history.push({
+            pathname: `agent/video/${result.socket}`,
+            state: { kycId: kyc, name: bankDetails.bName ? bankDetails.bName : "Bank" },
+          });
+        }
+        console.log(result);
+      });
   };
 
   const handleKycVerdict = (verdict) => {
@@ -174,7 +172,7 @@ const Bank = () => {
 
   const handleVerdict = (verdict) => {
     console.log(remarks);
-    if (dmr && accounts && clientData && remarks.length>0) {
+    if (dmr && accounts && clientData && remarks.length > 0) {
       dmr.methods
         .updateKycStatus(
           clientData.kycId,
@@ -187,7 +185,9 @@ const Bank = () => {
         .then((res) => {
           getBankData();
           handelAddRemarksPopup();
-          setIsPopupOpen((prev) => {return !prev;});
+          setIsPopupOpen((prev) => {
+            return !prev;
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -218,18 +218,12 @@ const Bank = () => {
           visible={addRemPop}
           onCancel={handelAddRemarksPopup}
           footer={[
-            <Button
-              type="primary"
-              onClick={() => handleVerdict(2)} 
-            >
+            <Button type="primary" onClick={() => handleVerdict(2)}>
               Reject KYC
             </Button>,
-            <Button
-              type="primary"
-              onClick={() => handleVerdict(1)} 
-            >
+            <Button type="primary" onClick={() => handleVerdict(1)}>
               Accept KYC
-            </Button>
+            </Button>,
           ]}
         >
           <Input
@@ -238,9 +232,7 @@ const Bank = () => {
             onChange={(e) => setremarks(e.target.value)}
           ></Input>
         </Modal>
-        {clientData && (
-          <VerifyClient dmr={dmr} accounts={accounts} data={clientData} />
-        )}
+        {clientData && <VerifyClient dmr={dmr} accounts={accounts} data={clientData} />}
       </Modal>
       <div
         style={{
@@ -258,9 +250,7 @@ const Bank = () => {
           }}
         >
           <div style={{ margin: "auto 0" }}>
-            <h1 style={{ color: "rgb(14 21 246 / 85%)", fontWeight: "700" }}>
-              vKYC
-            </h1>
+            <h1 style={{ color: "rgb(14 21 246 / 85%)", fontWeight: "700" }}>vKYC</h1>
           </div>
           <div style={{ margin: "auto 0" }}>
             <Button type="primary" ghost>
@@ -294,11 +284,7 @@ const Bank = () => {
               style={{ width: "20%" }}
               prefix={<UserOutlined />}
             />
-            <Button
-              size="large"
-              loading={isLoading}
-              onClick={handleSendRequest}
-            >
+            <Button size="large" loading={isLoading} onClick={handleSendRequest}>
               Send Request
             </Button>
           </div>
@@ -314,21 +300,13 @@ const Bank = () => {
               style={{ width: "20%" }}
               prefix={<UserOutlined />}
             />
-            <Button
-              size="large"
-              loading={isLoading}
-              onClick={handleRequestData}
-            >
+            <Button size="large" loading={isLoading} onClick={handleRequestData}>
               Access
             </Button>
           </div>
         </Card>
 
-        <Card
-          title="Pending Requests"
-          style={{ marginBottom: "20px" }}
-          hoverable
-        >
+        <Card title="Pending Requests" style={{ marginBottom: "20px" }} hoverable>
           {pendingClientRequests.length > 0
             ? pendingClientRequests.map((req, i) => {
                 return (
@@ -348,11 +326,7 @@ const Bank = () => {
             : "No pending requests"}
         </Card>
 
-        <Card
-          title="Approved Requests"
-          style={{ marginBottom: "20px" }}
-          hoverable
-        >
+        <Card title="Approved Requests" style={{ marginBottom: "20px" }} hoverable>
           {approvedClients.length > 0
             ? approvedClients.map((req, i) => {
                 return (
@@ -366,13 +340,10 @@ const Bank = () => {
                     }}
                     onClick={() =>
                       togglePopup(req, [
-                        <Button type="primary" onClick={()=>handelStartvKYC(req.kycId)}>
+                        <Button type="primary" onClick={() => handelStartvKYC(req.kycId)}>
                           Start vKYC
                         </Button>,
-                        <Button
-                          type="primary"
-                          onClick={handelAddRemarksPopup} 
-                        >
+                        <Button type="primary" onClick={handelAddRemarksPopup}>
                           Give KYC Verdict
                         </Button>,
                         <Button

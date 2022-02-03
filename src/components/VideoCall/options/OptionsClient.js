@@ -3,17 +3,16 @@ import { Input, Button, Modal, message } from "antd";
 import Phone from "../../../assets/phone.gif";
 import Teams from "../../../assets/teams.mp3";
 import * as classes from "./Options.module.css";
+import Hang from "../../../assets/hang.svg";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import VideoContext from "../../../context/VideoContext";
-
-import {
-  UserOutlined,
-  CopyOutlined,
-  PhoneOutlined,
-} from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
+import { UserOutlined, CopyOutlined, PhoneOutlined } from "@ant-design/icons";
 // import { baseURL } from "../../../api";
 
-const Options = () => {
+const Options = (props) => {
+  let history = useHistory();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const Audio = useRef();
   const {
@@ -21,7 +20,9 @@ const Options = () => {
     callAccepted,
     name,
     setName,
+    callEnded,
     me,
+    leaveCall,
     answerCall,
     setOtherUser,
     leaveCall1,
@@ -33,12 +34,18 @@ const Options = () => {
     } else Audio?.current?.pause();
   }, [isModalVisible]);
 
-  
+  useEffect(() => {
+    setName(props.clientName);
+  }, [props.clientName, setName]);
 
   const showModal = (showVal) => {
     setIsModalVisible(showVal);
   };
 
+  const handleHangup = () => {
+    leaveCall();
+    history.push("/client");
+  };
   const handleCancel = () => {
     setIsModalVisible(false);
     leaveCall1();
@@ -49,8 +56,7 @@ const Options = () => {
       setIsModalVisible(true);
       setOtherUser(call.from);
     } else setIsModalVisible(false);
-    // eslint-disable-next-line
-  }, [call.isReceivingCall]);
+  }, [call.isReceivingCall, call.from, callAccepted, setOtherUser]);
 
   return (
     <div className={classes.options}>
@@ -63,6 +69,7 @@ const Options = () => {
           maxLength={15}
           suffix={<small>{name.length}/15</small>}
           value={name}
+          disabled={true}
           onChange={(e) => {
             setName(e.target.value);
             localStorage.setItem("name", e.target.value);
@@ -83,6 +90,22 @@ const Options = () => {
             </Button>
           </CopyToClipboard>
         </div>
+      </div>
+      <div style={{ marginBottom: "0.5rem" }}>
+        <h2>Call</h2>
+        {callAccepted && !callEnded ? (
+          <Button
+            variant="contained"
+            onClick={handleHangup}
+            className={classes.hang}
+            tabIndex="0"
+          >
+            <img src={Hang} alt="hang up" style={{ height: "15px" }} />
+            &nbsp; Hang up
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
 
       {call.isReceivingCall && !callAccepted && (

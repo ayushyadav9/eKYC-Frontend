@@ -1,16 +1,14 @@
 import { useEffect } from "react";
 import Video from "./Video/VideoClient";
 import VideoState from "../../context/VideoState";
-
 import Options from "./options/OptionsClient";
 import { ToastContainer, toast } from "react-toastify";
 import "./VideoPage.css";
 
-const VideoPage = () => {
+const VideoPage = (props) => {
   useEffect(() => {
     if (!navigator.onLine) toast.error("Please connect to the internet!");
   }, []);
-
 
   return (
     <div className="videoPageBody">
@@ -28,7 +26,7 @@ const VideoPage = () => {
       />
       <VideoState>
         <Video />
-        <Options/>
+        <Options clientName={props.location.state.name} />
       </VideoState>
     </div>
   );

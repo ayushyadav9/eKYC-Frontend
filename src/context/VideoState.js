@@ -23,7 +23,6 @@ const VideoState = ({ children }) => {
   const [myMicStatus, setMyMicStatus] = useState(true);
   const [userMicStatus, setUserMicStatus] = useState();
   const [msgRcv, setMsgRcv] = useState("");
-  
 
   const myVideo = useRef();
   const userVideo = useRef();
@@ -35,18 +34,20 @@ const VideoState = ({ children }) => {
       .getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
         setStream(currentStream);
-        if(myVideo.current){
+        if (myVideo.current) {
           myVideo.current.srcObject = currentStream;
         }
       });
 
-    if(socket){
+    if (socket) {
       setMe(socket.id);
     }
     socket.on("me", (id) => {
       setMe(id);
       console.log(id);
     });
+
+    // socket.on("endCall", () => {});
 
     socket.on("updateUserMedia", ({ type, currentMediaStatus }) => {
       if (currentMediaStatus !== null || currentMediaStatus !== []) {
@@ -77,7 +78,6 @@ const VideoState = ({ children }) => {
     });
   }, []);
 
-
   const answerCall = () => {
     setCallAccepted(true);
     setOtherUser(call.from);
@@ -94,7 +94,7 @@ const VideoState = ({ children }) => {
     });
 
     peer.on("stream", (currentStream) => {
-      if(userVideo.current){
+      if (userVideo.current) {
         userVideo.current.srcObject = currentStream;
       }
     });
@@ -186,6 +186,7 @@ const VideoState = ({ children }) => {
   const leaveCall1 = () => {
     socket.emit("endCall", { id: otherUser });
   };
+
   const sendMsg = (value) => {
     socket.emit("msgUser", { name, to: otherUser, msg: value, sender: name });
     let msg = {};
